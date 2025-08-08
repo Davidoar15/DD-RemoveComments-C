@@ -14,7 +14,7 @@ data Estado =
 main :: IO ()
 main = process Codigo
 
--- Funcion para procesar caracter a caracter segun el estado
+-- process: procesa caracter a caracter segun el estado
 process :: Estado -> IO ()
 process estado = do
   eof <- isEOF

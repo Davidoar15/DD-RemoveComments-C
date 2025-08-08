@@ -1,0 +1,53 @@
+digraph EliminadorDeComentarios {
+  rankdir=LR;
+  splines=true;
+  graph [nodesep=1.0, ranksep=1.0];
+  node [shape=circle, fontsize=10, width=1.2, height=1.2];
+  edge [labelfloat=true];
+
+  // Nivel principal
+  { rank=same; CODIGO; BARRA; STRING; CARACTER }
+
+  // Nivel comentarios
+  { rank=same; COM_LINEA; COM_BLOQUE }
+
+  // Nivel subestados
+  { rank=same; ASTERISCO; ESCAPE }
+
+  // Transiciones desde CÓDIGO
+  CODIGO:e -> BARRA:w   [ label="/", minlen=2 ];
+  CODIGO:n -> STRING:s  [ label="\" (emite \")", minlen=2 ];
+  CODIGO:s -> CARACTER:n[ label="' (emite ')", minlen=2 ];
+  CODIGO -> CODIGO      [ label="otro\n(emite c)", minlen=2, dir=both ];
+
+  // A partir de BARRA
+  BARRA -> COM_LINEA    [ label="/", minlen=1 ];
+  BARRA -> COM_BLOQUE   [ label="*", minlen=1 ];
+  BARRA -> CODIGO       [ label="otro\n(emite '/'+c)", minlen=1 ];
+
+  // Comentario de línea
+  COM_LINEA -> COM_LINEA[ label="otro" ];
+  COM_LINEA -> CODIGO   [ label="\\n\n(emite \\n)", minlen=1 ];
+
+  // Comentario de bloque
+  COM_BLOQUE -> ASTERISCO   [ label="*" ];
+  COM_BLOQUE -> COM_BLOQUE  [ label="otro" ];
+
+  // Cierre de bloque
+  ASTERISCO -> CODIGO       [ label="/" ];
+  ASTERISCO -> ASTERISCO    [ label="*" ];
+  ASTERISCO -> COM_BLOQUE   [ label="otro" ];
+
+  // Literales
+  STRING -> ESCAPE    [ label="\\\n(emite \\)", minlen=1 ];
+  STRING -> CODIGO    [ label="\" (emite \")", minlen=1 ];
+  STRING -> STRING    [ label="otro\n(emite c)" ];
+
+  CARACTER -> ESCAPE  [ label="\\\n(emite \\)", minlen=1 ];
+  CARACTER -> CODIGO  [ label="' (emite ')", minlen=1 ];
+  CARACTER -> CARACTER[ label="otro\n(emite c)" ];
+
+  // Escape tanto en cadena como en carácter vuelve a estado previo
+  ESCAPE -> STRING    [ label="c\n(emite c)" ];
+  ESCAPE -> CARACTER  [ label="c\n(emite c)" ];
+}

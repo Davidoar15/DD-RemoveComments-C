@@ -70,7 +70,37 @@ El flujo general de la máquina de estados para eliminar comentarios en C empiez
 
 * Se lee un carácter `c`, se emite directamente (por ejemplo `\"` o `\'`) y se regresa al estado STRING o CHAR según donde se estaba.
 
-### Diagrama de la Máquina de Estados
+## Diagrama de la Máquina de Estados
 
-![Maquina-Estados](https://i.postimg.cc/QxdgHBhT/Maquina-Estado.png)
+![Maquina-Estados](https://i.postimg.cc/vHnKTs5K/maquina-Estados-Remover-Comentarios.png)
 
+## Formalización
+
+### Estados **Q**:
+```
+Q = {
+    CODIGO,
+    BARRA,
+    ASTERISCO,
+    COM_LINEA,
+    COM_BLOQUE,
+    CARACTER,
+    STRING,
+    ESCAPE
+}
+```
+
+### Estado Inicial **Qo**:
+```
+Qo = CODIGO
+```
+
+### Conjunto **Σ**:
+```
+Σ = { /, *, \n, \, ", ', otro }
+```
+* Siendo `otro` cualquier otro caracter del sistema ASCII.
+
+### Tabla de Transiciones (**Q x Σ**):
+
+![Tabla-TT](https://i.postimg.cc/3rqg600M/TT-Remover-Comentarios.png)
